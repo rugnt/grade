@@ -120,6 +120,17 @@ async def add_book(
     return {'success': True}
 
 
+@router.get("/book/{id_}", response_class=HTMLResponse)
+async def book_detail(request: Request, id_: int, db: Annotated[AsyncSession, Depends(get_db)]):
+    book_from_db = await db.execute(select(Book).options(joinedload(Book.category)).where(Book.id == id_))
+    book = book_from_db.scalar_one()
+    image_url = str(request.url_for('media', path=f'{book.filename}'))
+    return templates.TemplateResponse(
+        name='detail.html',
+        context={'request': request, 'book': book, 'image_url': image_url}
+    )
+
+
 @router.post("/books/load")
 async def upload_csv(
     db: Annotated[AsyncSession, Depends(get_db)],
