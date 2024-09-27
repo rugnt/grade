@@ -1,0 +1,73 @@
+version: '2'
+services:
+  pgsql:
+    container_name: ${PROJECT_PREFIX}_pgsql
+    build:
+      context: ./containers/pgsql
+      dockerfile: ./Dockerfile
+      args:
+        USER_ID: "$USER_ID"
+        GROUP_ID: "$GROUP_ID"
+        PROJECT_PREFIX: "$PROJECT_PREFIX"
+    hostname: pgsql
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=defaultdb
+    volumes:
+      - ./data/pgsql:/var/lib/postgresql/data
+  web:
+    ports:
+      - "${HTTP_PORT}:8000"
+    container_name: ${PROJECT_PREFIX}_web
+    command: uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+    env_file:
+      - .env
+    build:
+      context: ..
+      dockerfile: ./docker/containers/python/Dockerfile
+      args:
+        USER_ID: "$USER_ID"
+        GROUP_ID: "$GROUP_ID"
+        PROJECT_PREFIX: "$PROJECT_PREFIX"
+
+    depends_on:
+      - pgsql
+    volumes:
+      - ../:/usr/src/app
+  redis:
+    image: 'redis:latest'
+    container_name: ${PROJECT_PREFIX}_redis
+    env_file:
+      - .env
+  celery-beat:
+    container_name: ${PROJECT_PREFIX}_celery_beat
+    command: celery -A app.celery_app:celery_app beat -l INFO
+    build:
+      context: ..
+      dockerfile: ./docker/containers/python/Dockerfile
+      args:
+        USER_ID: "$USER_ID"
+        GROUP_ID: "$GROUP_ID"
+        PROJECT_PREFIX: "$PROJECT_PREFIX"
+    volumes:
+      - ../:/usr/src/app
+    env_file:
+      - .env
+  celery-worker:
+    container_name: ${PROJECT_PREFIX}_celery_worker
+    command: celery -A app.celery_app:celery_app worker -l INFO
+    build:
+      context: ..
+      dockerfile: ./docker/containers/python/Dockerfile
+      args:
+        USER_ID: "$USER_ID"
+        GROUP_ID: "$GROUP_ID"
+        PROJECT_PREFIX: "$PROJECT_PREFIX"
+    env_file:
+      - .env
+    volumes:
+      - ../:/usr/src/app
+
+
+

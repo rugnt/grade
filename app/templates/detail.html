@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+</br>
+</br>
+<div class="container">
+   <div class="row">
+      <div class="col-md-5">
+         <div class="project-info-box mt-0">
+            <h5>{{ book.title }}</h5>
+            <p class="mb-0">{{ book.description }}</p>
+            </br>
+         </div>
+      </div>
+      <div class="col-md-7">
+         <img src="{{ image_url }}" alt="project-image" class="rounded">
+         <div class="project-info-box">
+            <p><b>Категория:</b> {{ book.category.title }}</p>
+            <p><b>Рейтинг:</b> {{ book.rating }}/10 </p>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock %}
