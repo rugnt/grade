@@ -1,13 +1,13 @@
 import datetime
 
-from typing import Optional
 from pydantic import BaseModel
+
 from .secret import TokenOperatorMixin
 
 
 class Payload(BaseModel, TokenOperatorMixin):
     user_id: str
-    exp: Optional[datetime.datetime] = None
+    exp: datetime.datetime | None = None
 
 
 class Success(BaseModel):

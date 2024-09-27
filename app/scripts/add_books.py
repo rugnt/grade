@@ -1,12 +1,9 @@
-import random
 import asyncio
 
-from celery.bin.result import result
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.database import get_db, async_session_maker
 from sqlalchemy import insert
-from app.models import Book, Category
 
+from app.database import async_session_maker
+from app.models import Category
 
 
 async def add_books():

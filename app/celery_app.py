@@ -1,12 +1,12 @@
 import smtplib
 
-from app.logger import logger
-from celery import shared_task
-from app.config import settings
-
 from email.message import EmailMessage
+
 from celery import Celery
-from celery.schedules import crontab
+
+from app.config import settings
+from app.logger import logger
+
 
 includes_celery = ['app.tasks']
 celery_app = Celery('app', broker="redis://redis:6379/1", include=includes_celery)

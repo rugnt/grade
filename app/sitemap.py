@@ -1,9 +1,10 @@
 import asgi_sitemaps
 
-from app.database import async_session_maker
 from sqlalchemy import select
-from app.models import Book
+
 from app.config import settings
+from app.database import async_session_maker
+from app.models import Book
 
 
 domain = f"{settings.HOST}:{settings.HTTP_PORT}"

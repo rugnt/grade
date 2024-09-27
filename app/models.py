@@ -1,10 +1,8 @@
 import uuid
 
-from dataclasses import dataclass
-from sqlalchemy.dialects.postgresql import ARRAY, JSON, UUID
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.types import UserDefinedType
-from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, Double, func
+
 from app.database import Base
 
 

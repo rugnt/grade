@@ -1,5 +1,4 @@
-from pydantic import BaseModel, EmailStr
-from pydantic import model_validator
+from pydantic import BaseModel, EmailStr, model_validator
 
 
 class Registration(BaseModel):

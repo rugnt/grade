@@ -1,16 +1,16 @@
-import os
 import hashlib
+import os
 
-from fastapi import HTTPException
 from alembic.util import status
-from sqlalchemy import select, delete
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.dialects.postgresql import insert
-from app.models import User, Token
-from app.auth.schemas import Tokens
-from fastapi import status
-from app.schemas import Payload
+from fastapi import HTTPException
 from passlib.context import CryptContext
+from sqlalchemy import delete, select
+from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.auth.schemas import Tokens
+from app.models import Token, User
+from app.schemas import Payload
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

@@ -1,10 +1,8 @@
 from datetime import datetime, timedelta
 
-from fastapi import status, HTTPException, Request
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import HTTPException, Request, status
 from fastapi.security import HTTPBearer
 from jose import JWTError, jwt
-from typing import Optional
 
 from app.config import settings
 
@@ -28,7 +26,7 @@ oauth2_scheme = HTTPBearerToken()
 class TokenOperatorMixin:
     """Предназначем для модели pydantic (BaseModel)"""
 
-    exp: Optional[datetime] = None
+    exp: datetime | None = None
 
     def get_token(self):
         """Генерирует jwt токен по схеме"""

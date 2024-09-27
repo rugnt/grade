@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, Body
-from app.auth.schemas import Registration
-from sqlalchemy.ext.asyncio import AsyncSession
-from app.database import get_db
 from typing import Annotated
-from app.auth.services import registration_user
+
+from fastapi import APIRouter, Body, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.auth.schemas import Registration
+from app.auth.services import login_user, logout_user, registration_user
 from app.auth.services import refresh as refresh_token
-from app.auth.services import login_user, logout_user
+from app.database import get_db
 
 
 router = APIRouter(prefix='/auth')

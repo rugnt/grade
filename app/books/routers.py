@@ -1,26 +1,25 @@
-import hashlib
 import csv
+import hashlib
 import os
 
-from fastapi import Request, APIRouter, Depends, UploadFile, File, Body, Form
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
 from typing import Annotated
 
-from fastapi_localization import TranslateJsonResponse
-from app.database import get_db
-from app.logger import logger
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, File, Form, Request, UploadFile
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from PIL import Image
 from sqlalchemy import select, update
 from sqlalchemy.dialects.postgresql import insert
-from app.models import Book, Category, User
-from app.books.schemas import BookSchema
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
-from PIL import Image
+
+from app.books.schemas import BookOutputSchema, BookSchema
 from app.celery_app import send_email_message
-from app.secret import oauth2_scheme
+from app.database import get_db
+from app.logger import logger
+from app.models import Book, Category, User
 from app.schemas import Payload
-from app.books.schemas import BookOutputSchema
+from app.secret import oauth2_scheme
 
 
 router = APIRouter()
@@ -70,7 +69,7 @@ async def add_book_in_db(
     image.save(path)
 
 
-@router.get("/api/books", response_class=TranslateJsonResponse, response_model=BookOutputSchema)
+@router.get("/api/books", response_model=BookOutputSchema)
 async def api_books(
     db: Annotated[AsyncSession, Depends(get_db)],
     request: Request,
@@ -98,17 +97,6 @@ async def api_books(
     }
         for book in result_from_db.scalars()
     ]}
-
-
-@router.get("/book/{id_}", response_class=HTMLResponse)
-async def book_detail(request: Request, id_: int, db: Annotated[AsyncSession, Depends(get_db)]):
-    book_from_db = await db.execute(select(Book).options(joinedload(Book.category)).where(Book.id == id_))
-    book = book_from_db.scalar_one()
-    image_url = str(request.url_for('media', path=f'{book.filename}'))
-    return templates.TemplateResponse(
-        name='detail.html',
-        context={'request': request, 'book': book, 'image_url': image_url}
-    )
 
 
 @router.post("/add")

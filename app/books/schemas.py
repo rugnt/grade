@@ -1,7 +1,8 @@
 import json
 
-from pydantic import BaseModel, field_validator, model_validator
 from typing import Any
+
+from pydantic import BaseModel, field_validator, model_validator
 
 
 class BookSchema(BaseModel):
